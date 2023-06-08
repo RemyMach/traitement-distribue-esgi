@@ -26,7 +26,13 @@ print(df.printSchema())
 # 1
 
 df_non_null = df.filter(df.repo.isNotNull())
-df_grouped = df_non_null.groupBy("repo").agg(F.count("*").alias("commit_count")).orderBy(F.desc("commit_count")).limit(10)
+# Repartitionnement pour équilibrer les données entre les partitions
+df_repartitioned = df_non_null.repartition("repo")
+
+# Mise en cache du DataFrame pour éviter de recalculer les mêmes données
+df_repartitioned.cache()
+
+df_grouped = df_repartitioned.groupBy("repo").agg(F.count("*").alias("commit_count")).orderBy(F.desc("commit_count")).limit(10)
 
 df_grouped.show(truncate=100)
 
