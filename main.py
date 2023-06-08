@@ -23,6 +23,8 @@ df = spark.read.csv("/app/data/full.csv", inferSchema=True, header=True)
 df.coalesce(8)
 print(df.printSchema())
 
+print("--- Load %s seconds ---" % (time.time() - start_time))
+
 # 1
 
 df_non_null = df.filter(df.repo.isNotNull())
@@ -30,11 +32,13 @@ df_non_null = df.filter(df.repo.isNotNull())
 df_repartitioned = df_non_null.repartition("repo")
 
 # Mise en cache du DataFrame pour éviter de recalculer les mêmes données
-df_repartitioned.cache()
+#df_repartitioned.cache()
 
 df_grouped = df_repartitioned.groupBy("repo").agg(F.count("*").alias("commit_count")).orderBy(F.desc("commit_count")).limit(10)
 
 df_grouped.show(truncate=100)
+
+print("--- 1- %s seconds ---" % (time.time() - start_time))
 
 # 2
 df_spark = df_non_null.filter(df_non_null.repo == 'apache/spark')
@@ -45,6 +49,7 @@ df_spark_grouped_top = df_spark_grouped.limit(1)
 df_spark_grouped_top.show(truncate=100)
 
 from pyspark.sql.functions import regexp_extract,to_timestamp, expr, col, concat_ws, slice, split
+print("--- 2- %s seconds ---" % (time.time() - start_time))
 
 # 3
 # Mon Apr 19 20:38:03 2021 +0100
