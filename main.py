@@ -10,14 +10,18 @@ start_time = time.time()
 spark = SparkSession \
     .builder \
     .appName("spark-ui") \
-    .config("spark.default.parallelism", "10") \
     .config("spark.executor.cores", "1") \
+    .config("spark.executor.memory", "2g") \
+    .config("spark.executor.instances", "1") \
+    .config("spark.driver.memory", "1g") \
+    .config("spark.default.parallelism", "8") \
     .master("spark://spark-master:7077") \
     .getOrCreate()
 
 spark.sparkContext.setLogLevel("WARN")
 
 df = spark.read.csv("/app/data/full.csv", inferSchema=True, header=True)
+df.coalesce(8)
 print(df.printSchema())
 
 # 1
