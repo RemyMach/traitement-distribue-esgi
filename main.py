@@ -10,9 +10,8 @@ start_time = time.time()
 spark = SparkSession \
     .builder \
     .appName("spark-ui") \
-    .config("spark.executor.cores", "1") \
+    .config("spark.executor.cores", "4") \
     .config("spark.executor.memory", "2g") \
-    .config("spark.executor.instances", "1") \
     .config("spark.driver.memory", "1g") \
     .config("spark.default.parallelism", "8") \
     .master("spark://spark-master:7077") \
