@@ -19,12 +19,11 @@ spark = SparkSession \
 
 spark.sparkContext.setLogLevel("WARN")
 
-df = spark.read.csv("/app/data/full.csv", inferSchema=True, header=True)
+df = spark.read.parquet("/app/data/full.parquet", inferSchema=True, header=True)
 #df.cache()
 df.coalesce(8)
 print(df.printSchema())
 
-#df.write.parquet("/app/data/full.parquet")
 
 print("--- Load %s seconds ---" % (time.time() - start_time))
 
