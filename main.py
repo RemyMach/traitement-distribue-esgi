@@ -29,12 +29,12 @@ print("--- Load %s seconds ---" % (time.time() - start_time))
 
 df_non_null = df.filter(df.repo.isNotNull())
 # Repartitionnement pour équilibrer les données entre les partitions
-df_repartitioned = df_non_null.repartition("repo")
+#df_repartitioned = df_non_null.repartition("repo")
 
 # Mise en cache du DataFrame pour éviter de recalculer les mêmes données
 #df_repartitioned.cache()
 
-df_grouped = df_repartitioned.groupBy("repo").agg(F.count("*").alias("commit_count")).orderBy(F.desc("commit_count")).limit(10)
+df_grouped = df_non_null.groupBy("repo").agg(F.count("*").alias("commit_count")).orderBy(F.desc("commit_count")).limit(10)
 
 df_grouped.show(truncate=100)
 
@@ -60,21 +60,24 @@ date_format = "MMM d HH:mm:ss yyyy Z"
 #df_spark.show(truncate=False)
 #df_spark_extract = df_spark.withColumn("date", regexp_extract(df_spark["date"], "(\\w{3} \\d{1,2} \\d{2}:\\d{2}:\\d{2} \\d{4} (\\+|\\-)\\d{4})", 1))
 df_spark_extract = df_spark.withColumn("date", concat_ws(" ", slice(split(df_spark["date"], " "), 2, int(1e9))))
+print("---3 extract %s seconds ---" % (time.time() - start_time))
 
-
-df_spark_extract.show(truncate=False)
+#df_spark_extract.show(truncate=False)
 # Convertir la colonne 'date' en timestamp
 df_convert = df_spark_extract.withColumn("date", to_timestamp(col("date"), date_format))
+print("---3 timestamp %s seconds ---" % (time.time() - start_time))
 #df_convert.show(truncate=False)
 df_spark_four_year = df_convert.filter((df_convert.date >= expr("date_sub(current_date(), 4 * 365)")))
-df_spark_four_year.orderBy(F.asc("date")).show(truncate=False)
+print("---3 filter by date %s seconds ---" % (time.time() - start_time))
+#df_spark_four_year.orderBy(F.asc("date")).show(truncate=False)
 
 df_spark_four_year_grouped = df_spark_four_year.groupBy("author").agg(F.count("*").alias("commit_count")).orderBy(F.desc("commit_count"))
+print("---3 group by %s seconds ---" % (time.time() - start_time))
  
 #print(df_time.printSchema())
 df_spark_four_year_grouped.show(truncate=False)
 
-print("--- %s seconds ---" % (time.time() - start_time))
+print("---3 final %s seconds ---" % (time.time() - start_time))
 
 # 4
 from pyspark.ml.feature import StopWordsRemover
