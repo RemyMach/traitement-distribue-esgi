@@ -12,7 +12,6 @@ spark = SparkSession \
     .appName("spark-ui") \
     .config("spark.default.parallelism", "10") \
     .config("spark.executor.cores", "1") \
-    .config("spark.cores.max", "4") \
     .master("spark://spark-master:7077") \
     .getOrCreate()
 
