@@ -29,19 +29,19 @@ print("--- Load %s seconds ---" % (time.time() - start_time))
 
 df_non_null = df.filter(df.repo.isNotNull())
 # Repartitionnement pour équilibrer les données entre les partitions
-#df_repartitioned = df_non_null.repartition("repo")
+df_repartitioned = df_non_null.repartition("repo")
 
 # Mise en cache du DataFrame pour éviter de recalculer les mêmes données
 #df_repartitioned.cache()
 
-df_grouped = df_non_null.groupBy("repo").agg(F.count("*").alias("commit_count")).orderBy(F.desc("commit_count")).limit(10)
+df_grouped = df_repartitioned.groupBy("repo").agg(F.count("*").alias("commit_count")).orderBy(F.desc("commit_count")).limit(10)
 
 df_grouped.show(truncate=100)
 
 print("--- 1- %s seconds ---" % (time.time() - start_time))
 
 # 2
-df_spark = df_non_null.filter(df_non_null.repo == 'apache/spark')
+df_spark = df_repartitioned.filter(df_repartitioned.repo == 'apache/spark')
 # df_spark.cache()
 df_spark_grouped = df_spark.groupBy("author").agg(F.count("*").alias("commit_count")).orderBy(F.desc("commit_count"))
 df_spark_grouped_top = df_spark_grouped.limit(1)
@@ -78,6 +78,7 @@ print("---3 group by %s seconds ---" % (time.time() - start_time))
 df_spark_four_year_grouped.show(truncate=False)
 
 print("---3 final %s seconds ---" % (time.time() - start_time))
+sleep(1000)
 
 # 4
 from pyspark.ml.feature import StopWordsRemover
@@ -94,4 +95,3 @@ df_grouped = df_grouped.filter(df_grouped.word != '')
 df_grouped = df_grouped.groupBy("word").agg(F.count("word").alias("word_count")).orderBy(F.desc("word_count")).limit(10)
 df_grouped.show(truncate=100)
 
-sleep(1000)
