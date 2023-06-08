@@ -3,10 +3,15 @@ from pyspark.sql.functions import sum
 from time import sleep
 from pyspark.sql import functions as F
 
+import time
+start_time = time.time()
+
 # Initialisation de la SparkSession
 spark = SparkSession \
     .builder \
     .appName("spark-ui") \
+    .config("spark.default.parallelism", "4") \
+    .config("spark.executor.cores", "1") \
     .master("spark://spark-master:7077") \
     .getOrCreate()
 
@@ -55,6 +60,8 @@ df_spark_four_year_grouped = df_spark_four_year.groupBy("author").agg(F.count("*
 #print(df_time.printSchema())
 df_spark_four_year_grouped.show(truncate=False)
 
+print("--- %s seconds ---" % (time.time() - start_time))
+
 # 4
 from pyspark.ml.feature import StopWordsRemover
 
@@ -69,3 +76,5 @@ df_grouped = df_grouped.withColumn('word', F.explode(df_grouped.no_stop_words))
 df_grouped = df_grouped.filter(df_grouped.word != '')
 df_grouped = df_grouped.groupBy("word").agg(F.count("word").alias("word_count")).orderBy(F.desc("word_count")).limit(10)
 df_grouped.show(truncate=100)
+
+sleep(1000)
