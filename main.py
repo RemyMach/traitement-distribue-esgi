@@ -12,7 +12,7 @@ spark = SparkSession \
 
 spark.sparkContext.setLogLevel("WARN")
 
-df = spark.read.csv("../data/full.csv", inferSchema=True, header=True)
+df = spark.read.csv("/app/data/full.csv", inferSchema=True, header=True)
 print(df.printSchema())
 
 # 1
