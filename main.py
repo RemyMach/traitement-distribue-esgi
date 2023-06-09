@@ -31,6 +31,7 @@ print("--- Load %s seconds ---" % (time.time() - start_time))
 # 1
 
 df_non_null = df.filter(df.repo.isNotNull())
+df_non_null.cache()
 # Repartitionnement pour équilibrer les données entre les partitions
 #df_repartitioned = df_non_null.repartition(8, "repo")
 
