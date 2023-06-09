@@ -1,6 +1,5 @@
 # traitement-distribue-esgi
 
-<<<<<<< Updated upstream
 ## DESCRIPTION  
 
 Programme en python en utilsant l'outil Spark pour analyser un DataSet contenant tout les commits fait sur github depuis debut jusqu'en 2017 
@@ -40,6 +39,4 @@ Commande : /spark/bin/spark-submit /app/project-final.py
 
 ### Objectif 4 
 ![image4](https://github.com/RemyMach/traitement-distribue-esgi/assets/60228588/2f1b3a02-505b-4f8d-9196-df697335b1e4)
-=======
-=======
->>>>>>> Stashed changes
+
