@@ -20,3 +20,8 @@ A la place d’utiliser une liste de stopwords, vous pouvez utiliser le stopWord
 ## CONFIGURATION
 
 Voir le docker compose
+
+
+## LANCEMENT 
+
+Commande : RUN apk add --update python python-dev gfortran py-pip build-base py-numpy 
