@@ -19,12 +19,26 @@ A la place d’utiliser une liste de stopwords, vous pouvez utiliser le stopWord
 
 ## CONFIGURATION
 
-Voir le docker compose
+Copier le full.csv dans le dossier data
+
+### Docker compose
+
+Le docker compose se base sur des images custom permettant de lancer un cluster spark avec un master et 2 workers en utilsant numpy pour l'IA
 
 
 ## LANCEMENT 
 
-Commande : /spark/bin/spark-submit /app/project-final.py
+Générer le fichier parquet : 
+```bash
+/spark/bin/spark-submit /app/generate-parquet.py
+```
+
+
+
+Commande : 
+```bash
+/spark/bin/spark-submit /app/project-final.py
+```
 
 ## RESULTAT 
 
