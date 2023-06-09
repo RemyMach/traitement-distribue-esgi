@@ -52,5 +52,5 @@ Commande :
 ![image3](https://github.com/RemyMach/traitement-distribue-esgi/assets/60228588/8e9f869e-8225-47ca-951b-33bcdb4024be)
 
 ### Objectif 4 
-![image4](https://github.com/RemyMach/traitement-distribue-esgi/assets/60228588/2f1b3a02-505b-4f8d-9196-df697335b1e4)
+![image4](https://github.com/RemyMach/traitement-distribue-esgi/data/exercice-4.png)
 
