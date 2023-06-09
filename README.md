@@ -24,4 +24,14 @@ Voir le docker compose
 
 ## LANCEMENT 
 
-Commande : RUN apk add --update python python-dev gfortran py-pip build-base py-numpy 
+Commande : /spark/bin/spark-submit /app/project-final.py
+
+## RESULTAT 
+
+1 - ![image](https://github.com/RemyMach/traitement-distribue-esgi/assets/60228588/109dc48e-33eb-4acb-aa6e-89def3e746d8)
+
+2 - ![image2](https://github.com/RemyMach/traitement-distribue-esgi/assets/60228588/c4c63019-99d7-4487-8aff-04c44b8efc09)
+
+3 - ![image3](https://github.com/RemyMach/traitement-distribue-esgi/assets/60228588/8e9f869e-8225-47ca-951b-33bcdb4024be)
+
+4 - ![image4](https://github.com/RemyMach/traitement-distribue-esgi/assets/60228588/2f1b3a02-505b-4f8d-9196-df697335b1e4)
