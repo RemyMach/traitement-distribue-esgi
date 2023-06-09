@@ -3,6 +3,7 @@ from pyspark.sql.functions import sum
 from time import sleep
 from pyspark.sql import functions as F
 from pyspark.ml.feature import StopWordsRemover
+from pyspark.sql.functions import to_timestamp, expr, col, concat_ws, slice, split
 import time
 start_time = time.time()
 
@@ -32,27 +33,25 @@ print("--- Load %s seconds ---" % (time.time() - start_time))
 
 df_non_null = df.filter(df.repo.isNotNull())
 # Repartitionnement pour équilibrer les données entre les partitions
-df_repartitioned = df_non_null.repartition(12, "repo")
-df_repartitioned.cache()
+# df_repartitioned = df_non_null.repartition(12, "repo")
 
 # Mise en cache du DataFrame pour éviter de recalculer les mêmes données
 #df_repartitioned.cache()
 
-df_grouped = df_repartitioned.groupBy("repo").agg(F.count("*").alias("commit_count")).orderBy(F.desc("commit_count")).limit(10)
+df_grouped = df_non_null.groupBy("repo").agg(F.count("*").alias("commit_count")).orderBy(F.desc("commit_count")).limit(10)
 
 df_grouped.show(truncate=100)
 
 print("--- 1- %s seconds ---" % (time.time() - start_time))
 
 # 2
-df_spark = df_repartitioned.filter(df_repartitioned.repo == 'apache/spark')
+df_spark = df_non_null.filter(df_non_null.repo == 'apache/spark')
 # df_spark.cache()
 df_spark_grouped = df_spark.groupBy("author").agg(F.count("*").alias("commit_count")).orderBy(F.desc("commit_count"))
 df_spark_grouped_top = df_spark_grouped.limit(1)
 
 df_spark_grouped_top.show(truncate=100)
 
-from pyspark.sql.functions import regexp_extract,to_timestamp, expr, col, concat_ws, slice, split
 print("--- 2- %s seconds ---" % (time.time() - start_time))
 
 # 3
@@ -89,8 +88,9 @@ stop_word_remover = StopWordsRemover()
 stop_word_remover.setInputCol("words_split")
 stop_word_remover.setOutputCol("no_stop_words")
 
-df_non_null_2 = df_repartitioned.filter(df.message.isNotNull())
+df_non_null_2 = df_non_null.filter(df.message.isNotNull())
 df_grouped = df_non_null_2.withColumn('words_split', F.split(df_non_null_2.message, " "))
+
 df_grouped = stop_word_remover.transform(df_grouped)
 df_grouped = df_grouped.withColumn('word', F.explode(df_grouped.no_stop_words))
 df_grouped = df_grouped.filter(df_grouped.word != '')
