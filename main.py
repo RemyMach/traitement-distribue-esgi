@@ -2,7 +2,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import sum
 from time import sleep
 from pyspark.sql import functions as F
-
+from pyspark.ml.feature import StopWordsRemover
 import time
 start_time = time.time()
 
@@ -19,7 +19,7 @@ spark = SparkSession \
 
 spark.sparkContext.setLogLevel("WARN")
 
-df = spark.read.parquet("/app/data/full.parquet", inferSchema=True, header=True)
+df = spark.read.csv("/app/data/full.csv", inferSchema=True, header=True, multiLine=True)
 #df.cache()
 #df.coalesce(8)
 #print(df.printSchema())
@@ -80,10 +80,8 @@ print("---3 group by %s seconds ---" % (time.time() - start_time))
 df_spark_four_year_grouped.show(truncate=False)
 
 print("---3 final %s seconds ---" % (time.time() - start_time))
-sleep(1000)
 
 # 4
-from pyspark.ml.feature import StopWordsRemover
 
 stop_word_remover = StopWordsRemover()
 stop_word_remover.setInputCol("words_split")
@@ -96,4 +94,8 @@ df_grouped = df_grouped.withColumn('word', F.explode(df_grouped.no_stop_words))
 df_grouped = df_grouped.filter(df_grouped.word != '')
 df_grouped = df_grouped.groupBy("word").agg(F.count("word").alias("word_count")).orderBy(F.desc("word_count")).limit(10)
 df_grouped.show(truncate=100)
+
+print("---4 %s seconds ---" % (time.time() - start_time))
+
+sleep(1000)
 
