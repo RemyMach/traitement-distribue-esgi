@@ -54,7 +54,6 @@ print("---3 filter by date %s seconds ---" % (time.time() - start_time))
 df_spark_four_year_grouped = df_spark_four_year.groupBy("author").agg(F.count("*").alias("commit_count")).orderBy(F.desc("commit_count"))
 print("---3 group by %s seconds ---" % (time.time() - start_time))
  
-#print(df_time.printSchema())
 df_spark_four_year_grouped.show(truncate=False)
 
 print("---3 final %s seconds ---" % (time.time() - start_time))
@@ -67,7 +66,6 @@ stop_word_remover.setOutputCol("no_stop_words")
 
 df_non_null_2 = df_non_null.filter(df_non_null.message.isNotNull())
 df_grouped = df_non_null_2.withColumn('words_split', F.split(df_non_null_2.message, " "))
-
 
 df_grouped = stop_word_remover.transform(df_grouped)
 df_grouped = df_grouped.withColumn('word', F.explode(df_grouped.no_stop_words))
