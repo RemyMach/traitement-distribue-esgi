@@ -19,7 +19,8 @@ spark = SparkSession \
 
 spark.sparkContext.setLogLevel("WARN")
 
-df = spark.read.csv("/app/data/full.csv", inferSchema=True, header=True, multiLine=True)
+df = spark.read.parquet("/app/data/full.parquet", inferSchema=True, header=True, multiLine=True)
+#df.write.parquet("/app/data/full.parquet")
 #df.cache()
 #df.coalesce(8)
 #print(df.printSchema())
@@ -87,7 +88,7 @@ stop_word_remover = StopWordsRemover()
 stop_word_remover.setInputCol("words_split")
 stop_word_remover.setOutputCol("no_stop_words")
 
-df_non_null = df.filter(df.repo.isNotNull()).filter(df.message.isNotNull())
+df_non_null = df_non_null.filter(df.message.isNotNull())
 df_grouped = df_non_null.withColumn('words_split', F.split(df_non_null.message, " "))
 df_grouped = stop_word_remover.transform(df_grouped)
 df_grouped = df_grouped.withColumn('word', F.explode(df_grouped.no_stop_words))
